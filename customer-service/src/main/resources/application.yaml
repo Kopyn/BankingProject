@@ -15,12 +15,7 @@ springdoc:
 spring:
   data:
     mongodb:
-      host: localhost
-      port: 27017
-      database: eventstore
-      username: myuser
-      password: mypassword
-      authentication-database: eventstore
+      uri: mongodb://myuser:mypassword@localhost:27017/eventstore?authSource=eventstore&replicaSet=rs0
   application:
     name: customer-service
   security:
