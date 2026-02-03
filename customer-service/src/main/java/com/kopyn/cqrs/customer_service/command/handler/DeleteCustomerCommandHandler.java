@@ -21,22 +21,14 @@ public class DeleteCustomerCommandHandler implements CommandHandler<DeleteCustom
 
     @Override
     public Mono<CustomerInfo> handle(DeleteCustomerCommand command) {
-        // recreate customer from events persisted in event store
-        CustomerAggregate customerAggregate = customerRepository.findCustomerById(command.uuid());
-
-        try {
-            List<Event> producedEvents = customerAggregate.process();
-
-            producedEvents.forEach(customerAggregate::apply);
-
-            // save produced events to event store
-            customerRepository.saveEvents(producedEvents);
-        } catch (IllegalStateException ex) {
-            log.error(ex.toString());
-            return Mono.error(ex);
-        }
-
-        return Mono.just(customerAggregate.getCustomerInfo());
+        return customerRepository.findCustomerById(command.uuid())
+                .flatMap(customerAggregate -> {
+                    List<Event> producedEvents = customerAggregate.process();
+                    producedEvents.forEach(customerAggregate::apply);
+                    return customerRepository.saveEvents(producedEvents).then()
+                            .thenReturn(customerAggregate);
+                })
+                .map(CustomerAggregate::getCustomerInfo);
     }
 
     @Override

@@ -21,21 +21,13 @@ public class CreateCustomerCommandHandler implements CommandHandler<CreateCustom
 
     @Override
     public Mono<CustomerInfo> handle(CreateCustomerCommand command) {
-        // create fresh aggregate
-        CustomerAggregate customerAggregate = new CustomerAggregate();
-
-        // process command - it returns list of produced events
-        List<Event> producedEvents = customerAggregate.process(command);
-
-        // apply events to return updated entity via API
-        producedEvents.forEach(customerAggregate::apply);
-
-        // save produced events to the event store, you can apply them if you want to return the entity that
-        // your command was changing
-        customerRepository.saveEvents(producedEvents);
-
-        // change implementation so saveEvents returns a Mono when it's finished and return it in this method
-        return Mono.just(customerAggregate.getCustomerInfo());
+        return Mono.just(new CustomerAggregate())
+                .flatMap(customerAggregate -> {
+            List<Event> producedEvents = customerAggregate.process(command);
+            producedEvents.forEach(customerAggregate::apply);
+            return customerRepository.saveEvents(producedEvents)
+                    .then().thenReturn(customerAggregate);
+        }).map(CustomerAggregate::getCustomerInfo);
     }
 
     @Override

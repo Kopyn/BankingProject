@@ -21,23 +21,14 @@ public class UpdateCustomerCommandHandler implements CommandHandler<UpdateCustom
 
     @Override
     public Mono<CustomerInfo> handle(UpdateCustomerCommand command) {
-        // find customer in repository and replay its state
-        CustomerAggregate customerAggregate = customerRepository.findCustomerById(command.uuid());
-
-        // process incoming command
-        try {
-            List<Event> producedEvents = customerAggregate.process(command);
-
-            producedEvents.forEach(customerAggregate::apply);
-
-            // save produced events to event store
-            customerRepository.saveEvents(producedEvents);
-        } catch (IllegalStateException ex) {
-            log.error(ex.toString());
-            return Mono.error(ex);
-        }
-
-        return Mono.just(customerAggregate.getCustomerInfo());
+        return customerRepository.findCustomerById(command.uuid())
+                .flatMap(customerAggregate -> {
+                    List<Event> producedEvents = customerAggregate.process(command);
+                    producedEvents.forEach(customerAggregate::apply);
+                    return customerRepository.saveEvents(producedEvents).then()
+                            .thenReturn(customerAggregate);
+                })
+                .map(CustomerAggregate::getCustomerInfo);
     }
 
     @Override

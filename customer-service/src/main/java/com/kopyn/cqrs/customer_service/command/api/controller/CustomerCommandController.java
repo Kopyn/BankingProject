@@ -33,7 +33,7 @@ public class CustomerCommandController {
     public Mono<CustomerInfo> deleteCustomer(@PathVariable UUID customerId) {
         return commandService.deleteCustomer(customerId)
                 .onErrorResume(IllegalStateException.class, ex ->
-                        Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST)));
+                        Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer was already deleted!")));
     }
 
 }

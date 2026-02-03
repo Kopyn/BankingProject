@@ -38,6 +38,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springdoc</groupId>
@@ -66,19 +70,6 @@
 			<artifactId>lombok</artifactId>
 			<version>1.18.42</version>
 			<scope>provided</scope>
-		</dependency>
-
-		<!-- Source: https://mvnrepository.com/artifact/org.springframework.kafka/spring-kafka -->
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.kafka</groupId>-->
-<!--			<artifactId>spring-kafka</artifactId>-->
-<!--			<version>3.3.10</version>-->
-<!--		</dependency>-->
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-mongodb</artifactId>
-			<version>3.4.1</version>
 		</dependency>
 	</dependencies>
 
@@ -109,7 +100,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<version>3.3.10</version>
 				<configuration>
-					<mainClass>com.baeldung.spring.kafka.KafkaApplication</mainClass>
+					<mainClass>com.kopyn.cqrs.customer_service.CustomerServiceApplication</mainClass>
 				</configuration>
 			</plugin>
 		</plugins>
