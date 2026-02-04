@@ -1,7 +1,7 @@
 package com.kopyn.cqrs.customer_service.query.service;
 
-import com.kopyn.cqrs.customer_service.domain.Customer;
 import com.kopyn.cqrs.customer_service.query.api.messages.Query;
+import com.kopyn.cqrs.customer_service.query.domain.CustomerView;
 import com.kopyn.cqrs.customer_service.query.handler.QueryHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.reactivestreams.Publisher;
@@ -31,8 +31,8 @@ public class CustomerQueryBus {
     }
 
     @SuppressWarnings("unchecked")
-    public Publisher<Customer> handleQuery(Query query) {
-        QueryHandler<Query, Customer> handler = (QueryHandler<Query, Customer>) handlers.get(query.getClass());
+    public Publisher<CustomerView> handleQuery(Query query) {
+        QueryHandler<Query, CustomerView> handler = (QueryHandler<Query, CustomerView>) handlers.get(query.getClass());
 
         if (handler == null) {
             return Mono.error(new IllegalStateException("No handler for query: " + query.getClass()));

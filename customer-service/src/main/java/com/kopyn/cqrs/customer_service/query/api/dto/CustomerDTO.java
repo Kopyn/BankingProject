@@ -2,10 +2,8 @@ package com.kopyn.cqrs.customer_service.query.api.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @AllArgsConstructor
 @Getter
