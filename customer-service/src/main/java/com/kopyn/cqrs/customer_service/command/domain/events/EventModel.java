@@ -2,6 +2,7 @@ package com.kopyn.cqrs.customer_service.command.domain.events;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.ToString;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
@@ -12,6 +13,7 @@ import java.time.Instant;
  */
 @Document(collection = "events")
 @AllArgsConstructor
+@ToString
 public class EventModel {
     private String eventId;
     private Instant eventTimestamp;
