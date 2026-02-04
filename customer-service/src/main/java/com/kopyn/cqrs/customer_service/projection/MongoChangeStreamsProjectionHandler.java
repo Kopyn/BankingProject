@@ -18,10 +18,10 @@ public class MongoChangeStreamsProjectionHandler {
                 .watchCollection("events")
                 .listen()
                 .doOnSubscribe(s -> log.info("Subscribed to MongoDB Change Streams with: " + s.toString()))
-                .doOnNext(changeEvent ->
+                .flatMap(changeEvent ->
                 {
                     Event customerEvent = Objects.requireNonNull(changeEvent.getBody()).getEventData();
-                    mongoTemplate.save(updateDb(customerEvent)).subscribe();
+                    return mongoTemplate.save(updateDb(customerEvent));
                 })
                 .doOnError(err -> log.error(err.toString()))
                 .subscribe();
