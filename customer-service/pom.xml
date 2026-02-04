@@ -95,14 +95,14 @@
 				</configuration>
 			</plugin>
 
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>3.3.10</version>
-				<configuration>
-					<mainClass>com.kopyn.cqrs.customer_service.CustomerServiceApplication</mainClass>
-				</configuration>
-			</plugin>
+<!--			<plugin>-->
+<!--				<groupId>org.springframework.boot</groupId>-->
+<!--				<artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--				<version>3.3.10</version>-->
+<!--				<configuration>-->
+<!--					<mainClass>com.kopyn.cqrs.customer_service.CustomerServiceApplication</mainClass>-->
+<!--				</configuration>-->
+<!--			</plugin>-->
 		</plugins>
 	</build>
 
