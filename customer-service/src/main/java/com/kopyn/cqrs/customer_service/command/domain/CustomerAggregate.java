@@ -6,7 +6,7 @@ import com.kopyn.cqrs.customer_service.command.domain.commands.UpdateCustomerCom
 import com.kopyn.cqrs.customer_service.command.domain.events.CustomerCreatedEvent;
 import com.kopyn.cqrs.customer_service.command.domain.events.CustomerDeletedEvent;
 import com.kopyn.cqrs.customer_service.command.domain.events.CustomerUpdatedEvent;
-import com.kopyn.cqrs.customer_service.command.domain.events.Event;
+import domain.events.Event;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 

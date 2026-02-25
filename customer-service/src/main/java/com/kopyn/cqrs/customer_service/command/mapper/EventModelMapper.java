@@ -1,11 +1,9 @@
 package com.kopyn.cqrs.customer_service.command.mapper;
 
-import com.kopyn.cqrs.customer_service.command.domain.events.Event;
-import com.kopyn.cqrs.customer_service.command.domain.events.EventModel;
-import org.springframework.stereotype.Component;
 
-import java.time.Instant;
-import java.util.UUID;
+import domain.events.Event;
+import domain.events.EventModel;
+import org.springframework.stereotype.Component;
 
 @Component
 public class EventModelMapper {

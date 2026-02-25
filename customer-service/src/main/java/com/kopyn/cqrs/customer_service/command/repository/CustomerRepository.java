@@ -1,9 +1,9 @@
 package com.kopyn.cqrs.customer_service.command.repository;
 
 import com.kopyn.cqrs.customer_service.command.domain.CustomerAggregate;
-import com.kopyn.cqrs.customer_service.command.domain.events.Event;
-import com.kopyn.cqrs.customer_service.command.domain.events.EventModel;
 import com.kopyn.cqrs.customer_service.command.mapper.EventModelMapper;
+import domain.events.Event;
+import domain.events.EventModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;

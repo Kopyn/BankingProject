@@ -1,4 +1,4 @@
-package com.kopyn.cqrs.customer_service.command.domain.events;
+package domain.events;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

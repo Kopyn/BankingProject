@@ -1,6 +1,7 @@
 package com.kopyn.cqrs.customer_service.command.domain.events;
 
 import com.kopyn.cqrs.customer_service.command.domain.CustomerInfo;
+import domain.events.Event;
 
 public record CustomerDeletedEvent(
         CustomerInfo customerInfo,

@@ -3,6 +3,8 @@ package com.kopyn.cqrs.customer_service.projection;
 import com.kopyn.cqrs.customer_service.command.domain.CustomerInfo;
 import com.kopyn.cqrs.customer_service.command.domain.events.*;
 import com.kopyn.cqrs.customer_service.query.domain.CustomerView;
+import domain.events.Event;
+import domain.events.EventModel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.stereotype.Service;
