@@ -1,6 +1,10 @@
 package com.kopyn.cqrs.account_service.domain;
 
 import com.kopyn.cqrs.account_service.api.commands.CreateAccountCommand;
+import com.kopyn.cqrs.account_service.api.commands.UpdateAccountCommand;
+import com.kopyn.cqrs.account_service.domain.events.AccountCreatedEvent;
+import com.kopyn.cqrs.account_service.domain.events.AccountDeletedEvent;
+import com.kopyn.cqrs.account_service.domain.events.AccountUpdatedEvent;
 import domain.events.Event;
 import lombok.Getter;
 
@@ -11,58 +15,59 @@ import java.util.UUID;
 public class AccountAggregate {
     private int version = -1;
     @Getter
-    private AccountInfo customerInfo;
+    private AccountInfo accountInfo;
 
     List<Event> changes = new ArrayList<>();
 
     public List<Event> process(CreateAccountCommand createAccountCommand) {
-        CustomerInfo commandCustomerInfo = createAccountCommand.customerInfo();
-        commandCustomerInfo.setUuid(UUID.randomUUID().toString());
-        Event customerCreatedEvent = new CustomerCreatedEvent(createAccountCommand.customerInfo());
+        AccountInfo commandAccountInfo = createAccountCommand.accountInfo();
+        commandAccountInfo.setUuid(UUID.randomUUID().toString());
+        Event customerCreatedEvent = new AccountCreatedEvent(createAccountCommand.accountInfo());
         changes.add(customerCreatedEvent);
         return List.of(customerCreatedEvent);
     }
 
-    public List<Event> process(UpdateCustomerCommand updateCustomerCommand) throws IllegalStateException {
-        if (customerInfo.isDeleted()) {
-            throw new IllegalStateException("Customer doesn't exist");
+    public List<Event> process(UpdateAccountCommand updateAccountCommand) throws IllegalStateException {
+        if (accountInfo.isDeleted()) {
+            throw new IllegalStateException("Account doesn't exist");
         }
-        Event customerUpdatedEvent = new CustomerUpdatedEvent(updateCustomerCommand.customerInfo(), version + 1);
-        changes.add(customerUpdatedEvent);
-        return List.of(customerUpdatedEvent);
+        Event accountUpdatedEvent = new AccountUpdatedEvent(updateAccountCommand.accountInfo(),
+                version + 1);
+        changes.add(accountUpdatedEvent);
+        return List.of(accountUpdatedEvent);
     }
 
     public List<Event> process() throws IllegalStateException {
-        if (customerInfo.isDeleted()) {
-            throw new IllegalStateException("Customer is already deleted");
+        if (accountInfo.isDeleted()) {
+            throw new IllegalStateException("Account is already deleted");
         }
-        Event customerDeletedEvent = new CustomerDeletedEvent(customerInfo, version + 1);
-        changes.add(customerDeletedEvent);
-        return List.of(customerDeletedEvent);
+        Event accountDeletedEvent = new AccountDeletedEvent(accountInfo, version + 1);
+        changes.add(accountDeletedEvent);
+        return List.of(accountDeletedEvent);
     }
 
     public void apply(Event event) {
         version += 1;
-        if (event instanceof CustomerCreatedEvent e) {
+        if (event instanceof AccountCreatedEvent e) {
             apply(e);
-        } else if (event instanceof CustomerUpdatedEvent e) {
+        } else if (event instanceof AccountUpdatedEvent e) {
             apply(e);
-        } else if (event instanceof CustomerDeletedEvent) {
+        } else if (event instanceof AccountDeletedEvent) {
             apply();
         } else {
             throw new IllegalArgumentException("Unknown event type: " + event);
         }
     }
 
-    public void apply(CustomerCreatedEvent event) {
-        customerInfo = new CustomerInfo(event.customerInfo());
+    public void apply(AccountCreatedEvent event) {
+        accountInfo = new AccountInfo(event.accountInfo());
     }
 
-    public void apply(CustomerUpdatedEvent event) {
-        customerInfo = new CustomerInfo(event.customerInfo());
+    public void apply(AccountUpdatedEvent event) {
+        accountInfo = new AccountInfo(event.accountInfo());
     }
 
     public void apply() {
-        customerInfo.setDeleted(true);
+        accountInfo.setDeleted(true);
     }
 }

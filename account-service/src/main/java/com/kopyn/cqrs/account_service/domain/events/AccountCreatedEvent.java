@@ -8,7 +8,7 @@ public record AccountCreatedEvent (
 ) implements Event {
     @Override
     public String getAggregateId() {
-        return "";
+        return accountInfo.getUuid();
     }
 
     @Override

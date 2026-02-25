@@ -20,6 +20,13 @@ public class AccountCommandController {
         return null;
     }
 
+    /**
+     * This method is basically deposit and withdraw money mixed, just so it can be developed easily.
+     * It's basically the same
+     * @param accountId
+     * @param accountInfo
+     * @return
+     */
     @PutMapping(path = "{accountId}")
     public Mono<Void> updateAccount(@PathVariable UUID accountId, AccountInfo accountInfo) {
         return null;

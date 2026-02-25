@@ -1,5 +1,6 @@
 package com.kopyn.cqrs.account_service.repository;
 
+import com.kopyn.cqrs.account_service.domain.AccountAggregate;
 import domain.events.Event;
 import domain.events.EventModel;
 import lombok.RequiredArgsConstructor;
