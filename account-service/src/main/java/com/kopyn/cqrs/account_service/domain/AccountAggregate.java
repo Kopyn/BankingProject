@@ -1,11 +1,6 @@
-package com.kopyn.cqrs.customer_service.command.domain;
+package com.kopyn.cqrs.account_service.domain;
 
-
-import com.kopyn.cqrs.customer_service.command.domain.commands.CreateCustomerCommand;
-import com.kopyn.cqrs.customer_service.command.domain.commands.UpdateCustomerCommand;
-import com.kopyn.cqrs.customer_service.command.domain.events.CustomerCreatedEvent;
-import com.kopyn.cqrs.customer_service.command.domain.events.CustomerDeletedEvent;
-import com.kopyn.cqrs.customer_service.command.domain.events.CustomerUpdatedEvent;
+import com.kopyn.cqrs.account_service.api.commands.CreateAccountCommand;
 import domain.events.Event;
 import lombok.Getter;
 
@@ -13,17 +8,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class CustomerAggregate {
+public class AccountAggregate {
     private int version = -1;
     @Getter
-    private CustomerInfo customerInfo;
+    private AccountInfo customerInfo;
 
     List<Event> changes = new ArrayList<>();
 
-    public List<Event> process(CreateCustomerCommand createCustomerCommand) {
-        CustomerInfo commandCustomerInfo = createCustomerCommand.customerInfo();
+    public List<Event> process(CreateAccountCommand createAccountCommand) {
+        CustomerInfo commandCustomerInfo = createAccountCommand.customerInfo();
         commandCustomerInfo.setUuid(UUID.randomUUID().toString());
-        Event customerCreatedEvent = new CustomerCreatedEvent(createCustomerCommand.customerInfo());
+        Event customerCreatedEvent = new CustomerCreatedEvent(createAccountCommand.customerInfo());
         changes.add(customerCreatedEvent);
         return List.of(customerCreatedEvent);
     }

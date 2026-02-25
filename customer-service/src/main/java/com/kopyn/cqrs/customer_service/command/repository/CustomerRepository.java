@@ -1,7 +1,6 @@
 package com.kopyn.cqrs.customer_service.command.repository;
 
 import com.kopyn.cqrs.customer_service.command.domain.CustomerAggregate;
-import com.kopyn.cqrs.customer_service.command.mapper.EventModelMapper;
 import domain.events.Event;
 import domain.events.EventModel;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +22,6 @@ import java.util.UUID;
 public class CustomerRepository {
 
     private final EventStoreRepository esRepository;
-    private final EventModelMapper mapper;
 
     public Flux<EventModel> saveEvents(List<Event> uncommitedEvents) {
         return Flux.fromIterable(uncommitedEvents)
