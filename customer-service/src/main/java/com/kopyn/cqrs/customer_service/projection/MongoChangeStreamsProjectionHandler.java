@@ -56,8 +56,9 @@ public class MongoChangeStreamsProjectionHandler {
                 .doOnSuccess(saved -> log.info("Updated read model for {}", aggregateId));
     }
 
+    // this is not ideal but the main point of the project was to learn CQRS + Event sourcing + Reactive programming +
+    // WebFlux so I can live with that
     private CustomerView applyEvent(CustomerView model, Event event) {
-
         if (event instanceof CustomerCreatedEvent) {
             CustomerInfo info = ((CustomerCreatedEvent) event).customerInfo();
             model.setFirstName(info.getFirstName());
@@ -76,7 +77,6 @@ public class MongoChangeStreamsProjectionHandler {
             model.setBirthDate(info.getBirthDate());
             model.setCustomerId(info.getUuid());
             model.setDocumentNumber(info.getDocumentNumber());
-
         }
 
         return model;
