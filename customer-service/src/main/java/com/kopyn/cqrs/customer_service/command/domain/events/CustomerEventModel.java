@@ -1,0 +1,21 @@
+package com.kopyn.cqrs.customer_service.command.domain.events;
+
+import domain.events.Event;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.Instant;
+
+@Document(collection = "customer_events")
+@AllArgsConstructor
+@ToString
+public class CustomerEventModel {
+    private String eventId;
+    private Instant eventTimestamp;
+    private String aggregateId;
+    @Getter
+    private Event eventData;
+    private int aggregateVersion;
+}

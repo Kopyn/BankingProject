@@ -14,7 +14,7 @@ public class CustomerQueryRepository {
     private final CustomerViewRepository customerViewRepository;
 
     public Mono<CustomerView> getCustomerById(UUID uuid) {
-        return customerViewRepository.findById(uuid.toString());
+        return customerViewRepository.findByCustomerId(uuid.toString());
     }
 
     public Flux<CustomerView> getAllCustomers() {

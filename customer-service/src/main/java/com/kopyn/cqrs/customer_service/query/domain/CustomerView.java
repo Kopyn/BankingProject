@@ -1,21 +1,23 @@
 package com.kopyn.cqrs.customer_service.query.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
 
 @Document(collection = "customer_views")
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
 @Getter
+@Setter
 public class CustomerView {
-    private final String uuid;
-    private final String firstName;
+    @Id
+    private String customerId;
+    private String firstName;
     private String middleName;
-    private final String lastName;
-    private final LocalDate birthDate;
-    private final String documentNumber;
+    private String lastName;
+    private LocalDate birthDate;
+    private String documentNumber;
 }
