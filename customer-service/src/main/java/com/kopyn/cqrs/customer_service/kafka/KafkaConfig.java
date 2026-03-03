@@ -57,27 +57,4 @@ public class KafkaConfig {
         SenderOptions<String, String> senderOptions = SenderOptions.create(producerConfig);
         return senderOptions;
     }
-
-
-    // CONSUMER
-    public Map<String, Object> consumerConfig() {
-        Map<String, Object> config = new HashMap<>();
-        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        config.put(ConsumerConfig.GROUP_ID_CONFIG, "reactive-consumer-group");
-        config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        return config;
-    }
-
-    @Bean
-    public ReactiveKafkaConsumerTemplate<String, String> reactiveKafkaConsumerTemplate() {
-        return new ReactiveKafkaConsumerTemplate<>(receiverOptions());
-    }
-
-    private ReceiverOptions<String, String> receiverOptions() {
-        Map<String, Object> consumerConfig = consumerConfig();
-        ReceiverOptions<String, String> receiverOptions = ReceiverOptions.create(consumerConfig);
-        return receiverOptions.subscription(Collections.singletonList("customer_events"));
-    }
 }

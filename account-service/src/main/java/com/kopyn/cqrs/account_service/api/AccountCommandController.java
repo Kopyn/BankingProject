@@ -16,8 +16,8 @@ public class AccountCommandController {
     private final AccountCommandService accountService;
 
     @PostMapping
-    public Mono<AccountInfo> createAccount() {
-        return accountService.createCustomer(null);
+    public Mono<AccountInfo> createAccount(AccountInfo accountInfo) {
+        return accountService.createCustomer(accountInfo);
     }
 
     /*
