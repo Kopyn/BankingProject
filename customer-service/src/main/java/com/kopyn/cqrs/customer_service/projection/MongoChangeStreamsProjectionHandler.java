@@ -9,9 +9,9 @@ import org.springframework.data.mongodb.core.ChangeStreamEvent;
 import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.kafka.core.reactive.ReactiveKafkaProducerTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -20,8 +20,12 @@ import reactor.core.publisher.Mono;
 public class MongoChangeStreamsProjectionHandler {
 
     private final ReactiveMongoTemplate mongoTemplate;
+    private final ReactiveKafkaProducerTemplate<String, String> reactiveKafkaProducerTemplate;
 
-    public MongoChangeStreamsProjectionHandler(ReactiveMongoTemplate mongoTemplate) {
+    public MongoChangeStreamsProjectionHandler(ReactiveMongoTemplate mongoTemplate,
+                                               ReactiveKafkaProducerTemplate<String, String> producerTemplate) {
+        reactiveKafkaProducerTemplate = producerTemplate;
+
         this.mongoTemplate = mongoTemplate;
 
         mongoTemplate.changeStream(CustomerEventModel.class)
@@ -44,11 +48,7 @@ public class MongoChangeStreamsProjectionHandler {
         String aggregateId = event.getAggregateId();
 
         if (event instanceof CustomerDeletedEvent) {
-            return mongoTemplate.remove(
-                    Query.query(Criteria.where("_id").is(aggregateId)),
-                    CustomerView.class
-            )
-                    .doOnSuccess(r -> log.info("Deleted read model for {}", aggregateId));
+            return onCustomerDeletedEvent(aggregateId);
         }
 
         return mongoTemplate.findById(aggregateId, CustomerView.class)
@@ -63,8 +63,10 @@ public class MongoChangeStreamsProjectionHandler {
                 Query.query(Criteria.where("_id").is(aggregateId)),
                 CustomerView.class
         )
-//                .doOnNext()
-                .doOnSuccess(r -> log.info("Deleted read model for {}", aggregateId));
+                .flatMap(deleteResult -> reactiveKafkaProducerTemplate.send("customer_events", aggregateId + " deleted"))
+                .doOnSuccess(r -> {
+                    log.info("Deleted read model for {}", aggregateId);
+                });
     }
 
     // this is not ideal but the main point of the project was to learn CQRS + Event sourcing + Reactive programming +
