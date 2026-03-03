@@ -1,7 +1,6 @@
 package com.kopyn.cqrs.customer_service.command.repository;
 
 import com.kopyn.cqrs.customer_service.command.domain.events.CustomerEventModel;
-import domain.events.EventModel;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
@@ -12,5 +11,5 @@ import reactor.core.publisher.Flux;
   You shouldn't use domain specific classes here
  */
 public interface EventStoreRepository extends ReactiveMongoRepository<CustomerEventModel, String> {
-    Flux<EventModel> findByAggregateId(String aggregateId);
+    Flux<CustomerEventModel> findByAggregateId(String aggregateId);
 }

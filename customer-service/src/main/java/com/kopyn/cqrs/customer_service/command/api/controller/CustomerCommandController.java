@@ -23,14 +23,14 @@ public class CustomerCommandController {
     }
 
     @PutMapping(path = "/{customerId}")
-    public Mono<CustomerInfo> updateCustomer(@PathVariable UUID customerId, CustomerInfo customerInfo) {
+    public Mono<CustomerInfo> updateCustomer(@PathVariable("customerId") UUID customerId, CustomerInfo customerInfo) {
         return commandService.updateCustomer(customerId, customerInfo)
                 .onErrorResume(IllegalStateException ->
                         Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)));
     }
 
     @DeleteMapping(path = "/{customerId}")
-    public Mono<CustomerInfo> deleteCustomer(@PathVariable UUID customerId) {
+    public Mono<CustomerInfo> deleteCustomer(@PathVariable("customerId") UUID customerId) {
         return commandService.deleteCustomer(customerId)
                 .onErrorResume(IllegalStateException.class, ex ->
                         Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Customer was already deleted!")));

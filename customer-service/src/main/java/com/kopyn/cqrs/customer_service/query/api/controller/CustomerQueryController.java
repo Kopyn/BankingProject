@@ -19,9 +19,9 @@ public class CustomerQueryController {
 
     private final CustomerQueryService queryService;
 
-    @GetMapping("/{uuid}")
-    public Mono<CustomerView> getCustomerById(@PathVariable UUID uuid) {
-        return queryService.getCustomerByUUID(uuid);
+    @GetMapping("/{customerId}")
+    public Mono<CustomerView> getCustomerById(@PathVariable("customerId") UUID customerId) {
+        return queryService.getCustomerByUUID(customerId);
     }
 
     @GetMapping

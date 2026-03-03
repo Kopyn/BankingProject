@@ -13,6 +13,8 @@ springdoc:
         delete: Delete access
 
 spring:
+  kafka:
+    bootstrap-servers: localhost:9092
   data:
     mongodb:
       uri: mongodb://myuser:mypassword@localhost:27017/eventstore?authSource=eventstore&replicaSet=rs0

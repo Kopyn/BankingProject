@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -46,7 +47,8 @@ public class MongoChangeStreamsProjectionHandler {
             return mongoTemplate.remove(
                     Query.query(Criteria.where("_id").is(aggregateId)),
                     CustomerView.class
-            ).doOnSuccess(r -> log.info("Deleted read model for {}", aggregateId));
+            )
+                    .doOnSuccess(r -> log.info("Deleted read model for {}", aggregateId));
         }
 
         return mongoTemplate.findById(aggregateId, CustomerView.class)
@@ -54,6 +56,15 @@ public class MongoChangeStreamsProjectionHandler {
                 .map(existing -> applyEvent(existing, event))
                 .flatMap(mongoTemplate::save)
                 .doOnSuccess(saved -> log.info("Updated read model for {}", aggregateId));
+    }
+
+    private Mono<?> onCustomerDeletedEvent(String aggregateId) {
+        return mongoTemplate.remove(
+                Query.query(Criteria.where("_id").is(aggregateId)),
+                CustomerView.class
+        )
+//                .doOnNext()
+                .doOnSuccess(r -> log.info("Deleted read model for {}", aggregateId));
     }
 
     // this is not ideal but the main point of the project was to learn CQRS + Event sourcing + Reactive programming +
