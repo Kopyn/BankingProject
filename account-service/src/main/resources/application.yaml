@@ -1,8 +1,8 @@
 springdoc:
   swagger-ui:
     oauth:
-      client-id: swagger-ui
-      client-secret: oAVs2jDPpuDrm81QzNWfk7tIoCoF7w9F
+      client-id: account-service
+      client-secret: m2YduMEGN8n1hDI9a0xEm97fiJhaVkr5
       use-pkce-with-authorization-code-grant: true
       authorization-url: http://localhost:8080/realms/myrealm/protocol/openid-connect/auth
       token-url: http://localhost:8080/realms/myrealm/protocol/openid-connect/token
@@ -13,6 +13,8 @@ springdoc:
         delete: Delete access
 
 spring:
+  kafka:
+    bootstrap-servers: localhost:9092
   data:
     mongodb:
       uri: mongodb://myuser:mypassword@localhost:27017/eventstore?authSource=eventstore&replicaSet=rs0

@@ -1,6 +1,7 @@
 package com.kopyn.cqrs.account_service.repository;
 
 import com.kopyn.cqrs.account_service.domain.AccountAggregate;
+import com.kopyn.cqrs.account_service.domain.events.AccountEventModel;
 import domain.events.Event;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -17,12 +18,13 @@ public class AccountRepository {
 
     private final EventStoreRepository esRepository;
 
-    public Flux<EventModel> saveEvents(List<Event> uncommitedEvents) {
+    public Flux<AccountEventModel> saveEvents(List<Event> uncommitedEvents) {
         return Flux.fromIterable(uncommitedEvents)
                 .map(event ->
-                        new EventModel(UUID.randomUUID().toString(), Instant.now(), event.getAggregateId(),
+                        new AccountEventModel(UUID.randomUUID().toString(), Instant.now(), event.getAggregateId(),
                                 event, event.getAggregateVersion()))
                 .flatMap(esRepository::save);
+//        return Flux.empty();
     }
 
     public Mono<AccountAggregate> findCustomerById(UUID uuid) {

@@ -63,10 +63,9 @@ public class MongoChangeStreamsProjectionHandler {
                 Query.query(Criteria.where("_id").is(aggregateId)),
                 CustomerView.class
         )
-                .flatMap(deleteResult -> reactiveKafkaProducerTemplate.send("customer_events", aggregateId + " deleted"))
-                .doOnSuccess(r -> {
-                    log.info("Deleted read model for {}", aggregateId);
-                });
+                .flatMap(deleteResult -> reactiveKafkaProducerTemplate.send("customer_events",
+                        aggregateId + " deleted"))
+                .doOnSuccess(r -> log.info("Deleted read model for {}", aggregateId));
     }
 
     // this is not ideal but the main point of the project was to learn CQRS + Event sourcing + Reactive programming +
