@@ -27,7 +27,7 @@ public class AccountRepository {
 //        return Flux.empty();
     }
 
-    public Mono<AccountAggregate> findCustomerById(UUID uuid) {
+    public Mono<AccountAggregate> findAccountById(UUID uuid) {
         return esRepository.findByAggregateId(uuid.toString())
                 .reduce(new AccountAggregate(), (accountAggregate, eventModel) -> {
                     accountAggregate.apply(eventModel.getEventData());
