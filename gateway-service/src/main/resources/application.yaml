@@ -1,3 +1,50 @@
+#springdoc:
+#  swagger-ui:
+#    oauth:
+#      client-id: swagger-ui
+#      client-secret: oAVs2jDPpuDrm81QzNWfk7tIoCoF7w9F
+#      use-pkce-with-authorization-code-grant: true
+#      authorization-url: http://localhost:8080/realms/myrealm/protocol/openid-connect/auth
+#      token-url: http://localhost:8080/realms/myrealm/protocol/openid-connect/token
+#      scopes:
+#        read: Read access
+#        write: Write access
+#        update: Update access
+#        delete: Delete access
+
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            provider: keycloak
+            client-id: swagger-ui
+            client-secret: oAVs2jDPpuDrm81QzNWfk7tIoCoF7w9F
+            use-pkce-with-authorization-code-grant: true
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8081/swagger-ui.html
+            scopes:
+              read: Read access
+              write: Write access
+              update: Update access
+              delete: Delete access
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/realms/myrealm
+
+
   application:
     name: gateway-service
+    cloud:
+      gateway:
+        routes:
+          - id: customer-route
+            uri: ${CUSTOMER_SERVICE_URL:http://localhost:8082}
+            predicates:
+              - Path=/customers/**
+            filters:
+              - AddRequestHeader=X-Tenant,acme
+              - AddResponseHeader=X-Customer,customer
+server:
+  port: 8081
