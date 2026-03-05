@@ -1,18 +1,31 @@
-#springdoc:
-#  swagger-ui:
-#    oauth:
-#      client-id: swagger-ui
-#      client-secret: oAVs2jDPpuDrm81QzNWfk7tIoCoF7w9F
-#      use-pkce-with-authorization-code-grant: true
-#      authorization-url: http://localhost:8080/realms/myrealm/protocol/openid-connect/auth
-#      token-url: http://localhost:8080/realms/myrealm/protocol/openid-connect/token
-#      scopes:
-#        read: Read access
-#        write: Write access
-#        update: Update access
-#        delete: Delete access
+springdoc:
+  swagger-ui:
+    oauth:
+      client-id: swagger-ui
+      client-secret: oAVs2jDPpuDrm81QzNWfk7tIoCoF7w9F
+      use-pkce-with-authorization-code-grant: true
+      authorization-url: http://localhost:8080/realms/myrealm/protocol/openid-connect/auth
+      token-url: http://localhost:8080/realms/myrealm/protocol/openid-connect/token
+      scopes:
+        read: Read access
+        write: Write access
+        update: Update access
+        delete: Delete access
 
 spring:
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: customer-route
+              uri: ${CUSTOMER_SERVICE_URI:http://localhost:8082}
+              predicates:
+                - Path=/customers/**
+              filters:
+                - AddRequestHeader=X-Tenant,acme
+                - AddResponseHeader=X-Customer,customer
+
   security:
     oauth2:
       client:
@@ -36,15 +49,5 @@ spring:
 
   application:
     name: gateway-service
-    cloud:
-      gateway:
-        routes:
-          - id: customer-route
-            uri: ${CUSTOMER_SERVICE_URL:http://localhost:8082}
-            predicates:
-              - Path=/customers/**
-            filters:
-              - AddRequestHeader=X-Tenant,acme
-              - AddResponseHeader=X-Customer,customer
 server:
   port: 8081
