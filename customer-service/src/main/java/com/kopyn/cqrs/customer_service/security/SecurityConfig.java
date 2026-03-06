@@ -49,20 +49,20 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public OpenAPI openAPI() {
-        return new OpenAPI()
-                .components(new Components()
-                        .addSecuritySchemes("keycloak", new SecurityScheme()
-                                .type(SecurityScheme.Type.OAUTH2)
-                                .flows(new OAuthFlows()
-                                        .authorizationCode(new OAuthFlow()
-                                                .authorizationUrl("http://localhost:8080/realms/myrealm/protocol/openid-connect/auth")
-                                                .tokenUrl("http://localhost:8080/realms/myrealm/protocol/openid-connect/token")
-                                        )
-                                )
-                        )
-                )
-                .addSecurityItem(new SecurityRequirement().addList("keycloak"));
-    }
+//    @Bean
+//    public OpenAPI openAPI() {
+//        return new OpenAPI()
+//                .components(new Components()
+//                        .addSecuritySchemes("keycloak", new SecurityScheme()
+//                                .type(SecurityScheme.Type.OAUTH2)
+//                                .flows(new OAuthFlows()
+//                                        .authorizationCode(new OAuthFlow()
+//                                                .authorizationUrl("http://localhost:8080/realms/myrealm/protocol/openid-connect/auth")
+//                                                .tokenUrl("http://localhost:8080/realms/myrealm/protocol/openid-connect/token")
+//                                        )
+//                                )
+//                        )
+//                )
+//                .addSecurityItem(new SecurityRequirement().addList("keycloak"));
+//    }
 }

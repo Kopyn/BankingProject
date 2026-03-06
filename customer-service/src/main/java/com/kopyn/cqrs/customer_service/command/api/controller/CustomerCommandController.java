@@ -18,12 +18,12 @@ public class CustomerCommandController {
     private final CustomerCommandService commandService;
 
     @PostMapping
-    public Mono<CustomerInfo> createCustomer(CustomerInfo customerInfo) {
+    public Mono<CustomerInfo> createCustomer(@RequestBody CustomerInfo customerInfo) {
         return commandService.createCustomer(customerInfo);
     }
 
     @PutMapping(path = "/{customerId}")
-    public Mono<CustomerInfo> updateCustomer(@PathVariable("customerId") UUID customerId, CustomerInfo customerInfo) {
+    public Mono<CustomerInfo> updateCustomer(@PathVariable("customerId") UUID customerId, @RequestBody CustomerInfo customerInfo) {
         return commandService.updateCustomer(customerId, customerInfo)
                 .onErrorResume(IllegalStateException ->
                         Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND)));
