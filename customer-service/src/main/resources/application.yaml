@@ -1,16 +1,16 @@
 springdoc:
   swagger-ui:
     oauth:
-      client-id: gateway-service
-      client-secret: oAVs2jDPpuDrm81QzNWfk7tIoCoF7w9F
+      client-id: swagger
+      client-secret: 9GWog3K2tTWJA3kFf3uEZIH6anM63iuY
       use-pkce-with-authorization-code-grant: true
       authorization-url: http://localhost:8080/realms/myrealm/protocol/openid-connect/auth
       token-url: http://localhost:8080/realms/myrealm/protocol/openid-connect/token
-      scopes:
-        read: Read access
-        write: Write access
-        update: Update access
-        delete: Delete access
+#      scopes:
+#        read: Read access
+#        write: Write access
+#        update: Update access
+#        delete: Delete access
 
 spring:
   kafka:

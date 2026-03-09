@@ -20,13 +20,21 @@ public class AccountCommandController {
         return accountService.createCustomer(accountInfo);
     }
 
-    /*
-     * This method is basically deposit and withdraw money mixed, just so it can be developed easily.
-     * It's basically the same
-     */
     @PutMapping(path = "{accountId}")
     public Mono<AccountInfo> updateAccount(@PathVariable UUID accountId, @RequestBody AccountInfo accountInfo) {
         return accountService.updateCustomer(accountId, accountInfo);
+    }
+
+    @PutMapping(path = "{accountId}")
+    public Mono<AccountInfo> depositMoney(@PathVariable UUID accountId, @RequestBody long amount) {
+//        return accountService.updateCustomer(accountId, accountInfo);
+        return Mono.empty();
+    }
+
+    @PutMapping(path = "{accountId}")
+    public Mono<AccountInfo> withdrawMoney(@PathVariable UUID accountId, @RequestBody long amount) {
+//        return accountService.updateCustomer(accountId, accountInfo);
+        return Mono.empty();
     }
 
     @DeleteMapping(path = "{accountId}")

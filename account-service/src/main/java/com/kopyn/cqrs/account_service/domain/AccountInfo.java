@@ -13,6 +13,7 @@ public class AccountInfo {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String uuid;
     private String customerId;
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private long balance;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean deleted; // proper would be some status CREATED, DELETED
