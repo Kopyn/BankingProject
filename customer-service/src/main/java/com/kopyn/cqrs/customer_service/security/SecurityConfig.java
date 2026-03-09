@@ -21,25 +21,12 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers(
-                                "/",
+//                                "/",
                                 "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/webjars/**"
                         ).permitAll()
-
-                        .pathMatchers(HttpMethod.POST, "/customers/**")
-                        .hasAuthority("SCOPE_write")
-
-                        .pathMatchers(HttpMethod.PUT, "/customers/**")
-                        .hasAuthority("SCOPE_update")
-
-                        .pathMatchers(HttpMethod.DELETE, "/customers/**")
-                        .hasAuthority("SCOPE_delete")
-
-                        .pathMatchers(HttpMethod.GET, "/customers/**")
-                        .hasAuthority("SCOPE_read")
-
                         .anyExchange().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 ->
@@ -49,20 +36,20 @@ public class SecurityConfig {
         return http.build();
     }
 
-//    @Bean
-//    public OpenAPI openAPI() {
-//        return new OpenAPI()
-//                .components(new Components()
-//                        .addSecuritySchemes("keycloak", new SecurityScheme()
-//                                .type(SecurityScheme.Type.OAUTH2)
-//                                .flows(new OAuthFlows()
-//                                        .authorizationCode(new OAuthFlow()
-//                                                .authorizationUrl("http://localhost:8080/realms/myrealm/protocol/openid-connect/auth")
-//                                                .tokenUrl("http://localhost:8080/realms/myrealm/protocol/openid-connect/token")
-//                                        )
-//                                )
-//                        )
-//                )
-//                .addSecurityItem(new SecurityRequirement().addList("keycloak"));
-//    }
+    @Bean
+    public OpenAPI openAPI() {
+        return new OpenAPI()
+                .components(new Components()
+                        .addSecuritySchemes("keycloak", new SecurityScheme()
+                                .type(SecurityScheme.Type.OAUTH2)
+                                .flows(new OAuthFlows()
+                                        .authorizationCode(new OAuthFlow()
+                                                .authorizationUrl("http://localhost:8080/realms/myrealm/protocol/openid-connect/auth")
+                                                .tokenUrl("http://localhost:8080/realms/myrealm/protocol/openid-connect/token")
+                                        )
+                                )
+                        )
+                )
+                .addSecurityItem(new SecurityRequirement().addList("keycloak"));
+    }
 }

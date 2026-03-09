@@ -1,7 +1,7 @@
 #springdoc:
 #  swagger-ui:
 #    oauth:
-#      client-id: swagger-ui
+#      client-id: gateway-servicey
 #      client-secret: oAVs2jDPpuDrm81QzNWfk7tIoCoF7w9F
 #      use-pkce-with-authorization-code-grant: true
 #      authorization-url: http://localhost:8080/realms/myrealm/protocol/openid-connect/auth
@@ -13,6 +13,8 @@
 #        delete: Delete access
 
 spring:
+  session:
+    store-type: redis
   cloud:
     gateway:
       server:
@@ -25,15 +27,32 @@ spring:
               filters:
                 - AddRequestHeader=X-Tenant,acme
                 - AddResponseHeader=X-Customer,customer
+                - TokenRelay
 
   security:
     oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8080/realms/myrealm
+      client:
+        registration:
+          keycloak:
+            client-id: gateway-service
+            client-secret: oAVs2jDPpuDrm81QzNWfk7tIoCoF7w9F
+#            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8081/login/oauth2/code/{registrationId}
+            scope: openid
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/realms/myrealm
 
 
   application:
     name: gateway-service
 server:
   port: 8081
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+        web: DEBUG
+        security.oauth2: DEBUG

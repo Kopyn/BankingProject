@@ -16,7 +16,7 @@ public class AccountCommandController {
     private final AccountCommandService accountService;
 
     @PostMapping
-    public Mono<AccountInfo> createAccount(AccountInfo accountInfo) {
+    public Mono<AccountInfo> createAccount(@RequestBody AccountInfo accountInfo) {
         return accountService.createCustomer(accountInfo);
     }
 
@@ -25,7 +25,7 @@ public class AccountCommandController {
      * It's basically the same
      */
     @PutMapping(path = "{accountId}")
-    public Mono<AccountInfo> updateAccount(@PathVariable UUID accountId, AccountInfo accountInfo) {
+    public Mono<AccountInfo> updateAccount(@PathVariable UUID accountId, @RequestBody AccountInfo accountInfo) {
         return accountService.updateCustomer(accountId, accountInfo);
     }
 

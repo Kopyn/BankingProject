@@ -1,17 +1,3 @@
-#springdoc:
-#  swagger-ui:
-#    oauth:
-#      client-id: account-service
-#      client-secret: m2YduMEGN8n1hDI9a0xEm97fiJhaVkr5
-#      use-pkce-with-authorization-code-grant: true
-#      authorization-url: http://localhost:8080/realms/myrealm/protocol/openid-connect/auth
-#      token-url: http://localhost:8080/realms/myrealm/protocol/openid-connect/token
-#      scopes:
-#        read: Read access
-#        write: Write access
-#        update: Update access
-#        delete: Delete access
-
 spring:
   kafka:
     bootstrap-servers: localhost:9092
