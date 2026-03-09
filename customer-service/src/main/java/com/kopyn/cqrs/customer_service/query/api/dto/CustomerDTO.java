@@ -4,13 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @AllArgsConstructor
 @Getter
 public class CustomerDTO {
 
-    private final UUID uuid;
+    private final String uuid;
     private final String firstName;
     private String middleName;
     private final String lastName;

@@ -1,3 +1,46 @@
 spring:
+  config:
+    activate:
+      on-profile:
+        - default
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: gateway-service
+            client-secret: oAVs2jDPpuDrm81QzNWfk7tIoCoF7w9F
+            redirect-uri: http://localhost:8081/login/oauth2/code/{registrationId}
+            scope: openid
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/realms/myrealm
+  session:
+    store-type: redis
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: customer-route
+              uri: ${CUSTOMER_SERVICE_URI:http://localhost:8082}
+              predicates:
+                - Path=/customers/**
+              filters:
+                - AddRequestHeader=X-Tenant,acme
+                - AddResponseHeader=X-Customer,customer
+                - TokenRelay
+
   application:
     name: gateway-service
+server:
+  port: 8081
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+        web: DEBUG
+        security.oauth2: DEBUG
+        core.env: DEBUG
