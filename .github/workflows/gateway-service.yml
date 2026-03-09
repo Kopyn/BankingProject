@@ -21,6 +21,8 @@ jobs:
           cache: 'maven'
       - name: Build with Maven
         run: mvn clean package -B --file gateway-service/pom.xml
+        env:
+          SPRING_PROFILES_ACTIVE: ci
   dockerize:
     runs-on: ubuntu-latest
     needs: 
