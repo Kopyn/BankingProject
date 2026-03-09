@@ -2,6 +2,8 @@ server:
   port: 8084
 
 spring:
+  profiles:
+    active: dev
   kafka:
     bootstrap-servers: localhost:9092
   data:

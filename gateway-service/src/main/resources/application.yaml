@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: dev
   session:
     store-type: redis
   cloud:

@@ -12,6 +12,8 @@ springdoc:
         delete: Delete access
 
 spring:
+  profiles:
+    active: dev
   kafka:
     bootstrap-servers: localhost:9092
   data:
