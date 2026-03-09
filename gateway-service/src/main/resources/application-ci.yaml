@@ -1,20 +1,9 @@
 spring:
-  config:
-    activate:
-      on-profile:
-        - default
-  security:
-    oauth2:
-      client:
-        registration:
-          keycloak:
-            client-id: gateway-service
-            client-secret: oAVs2jDPpuDrm81QzNWfk7tIoCoF7w9F
-            redirect-uri: http://localhost:8081/login/oauth2/code/{registrationId}
-            scope: openid
-        provider:
-          keycloak:
-            issuer-uri: http://localhost:8080/realms/myrealm
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.oauth2.client.reactive.ReactiveOAuth2ClientAutoConfiguration
+      - org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientAutoConfiguration
+
   session:
     store-type: redis
   cloud:
