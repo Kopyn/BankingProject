@@ -1,22 +1,18 @@
-# CQRS-Project
-Project aimed at applying the CQRS pattern with usage of Kafka EventBus, Elasticsearch for Query handling with further possible upgrades. 
+# BankingProject
+This project aims to simulate the behaviour of a banking system. The architecture is based on CQRS and Event Sourcing patterns and the project is entirely focused on learning the basics of distributed and event-sourced systems, therefore I tried mixing different approaches to try and learn upsides as well as downsides of each approach.
+Command side of the system is handled by account-service, customer-service and transaction-service which serves as a SAGA orchestrator for inter-account money transfers.
+Query side is handled by customer-service but also one query-specific service - account-info-service. Customer-service should ideally be broken into separate services, so queries and commands could be handled and scaled separately.
+I also included a spring-cloud-gateway as an entry point to the system. It is used as oauth2 client, it stores user sessions with redis and is a good approach for any request and/or response filtering in the future.
 
 ## Breakdown of project components:
-* Client application - this application will be used to interact with the system. At first it will generate a call to the backend every X seconds. Later there will be introduced functionality to make manual calls to the backend.
-* Gateway application - this application will be distributing commands and queries onto separate channels, it will be the entry point to the system.
-* Command and Query channels - used to facilitate the CQRS pattern - Command channel will be realised with Kafka event bus making the system event-driven. Query channel will be implemented with the usage of basic HTTP requests.
-* Query channel:
-  * Query service - a service dedicated for handling queries, the service will have a connection to some data store - possible solutions are MongoDB, Elasticsearch, Solr, separate Database or deticated views in main DB.
-  * Read-only datastore - used for storing the data which will be queried.
-* Command channel:
- * Kafka command topic - used for transfering commands from the client to command handling service
- * Command handling service - will be implemented as Spring boot application at first. It will handle CUD operations on entities and store them in the Datastore.
- * Database
- * Indexer - used for synchronizing read-only datastore with the main database
+* Gateway application - entry point into the system, this is a standard spring-cloud-gateway with redis storage and serves as oauth2 client.
+* Account-service
+* Customer-service
+* Transaction-service
+* Account-info-service
 
 ## Tech stack
 * Java with SpringWebflux for asynchronous and non-blocking command processing
-* Kafka Event Store for reliable message transfer
-* Zookeeper for distributed coordination
-* MySQL database for reliable data storage
-* Elasticsearch search engine for fast querying
+* Apache Kafka - used for cross-service communication, especially useful for money transfer SAGA, handling credit or debit failures etc.
+* MongoDB - eventstore and with the usage of Mongo Change Streams it provides an event bus to handle query-side projection (this approach is not ideal because and is not a perfect Transactional Outbox Pattern)
+* Keycloak - Local instance of keycloak as my authorization server
