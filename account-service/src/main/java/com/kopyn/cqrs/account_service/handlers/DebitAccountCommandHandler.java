@@ -17,7 +17,7 @@ public class DebitAccountCommandHandler {
     private final AccountRepository accountRepository;
 
     public Mono<AccountInfo> handle(DebitAccountCommand command) {
-        return Mono.just(new AccountAggregate())
+        return accountRepository.findAccountById(command.accountId())
                 .flatMap(accountAggregate -> {
                     List<Event> producedEvents = accountAggregate.process(command);
                     producedEvents.forEach(accountAggregate::apply);

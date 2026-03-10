@@ -25,12 +25,12 @@ public class AccountCommandController {
         return accountService.updateCustomer(accountId, accountInfo);
     }
 
-    @PutMapping(path = "{accountId}")
+    @PostMapping(path = "/{accountId}/deposits")
     public Mono<AccountInfo> depositMoney(@PathVariable UUID accountId, long amount) {
         return accountService.creditAccount(accountId, amount, null);
     }
 
-    @PutMapping(path = "{accountId}")
+    @PostMapping(path = "/{accountId}/withdrawals")
     public Mono<AccountInfo> withdrawMoney(@PathVariable UUID accountId, long amount) {
         return accountService.debitAccount(accountId, amount, null);
     }

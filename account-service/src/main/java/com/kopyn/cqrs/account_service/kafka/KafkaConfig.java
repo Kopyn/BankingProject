@@ -4,6 +4,7 @@ import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,8 +30,13 @@ public class KafkaConfig {
     }
 
     @Bean
-    public NewTopic topic1() {
+    public NewTopic customerEventsTopic() {
         return new NewTopic("customer_events", 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic transactionEventsTopic() {
+        return new NewTopic("transaction_events", 1, (short) 1);
     }
 
     // CONSUMER
@@ -45,13 +51,26 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ReactiveKafkaConsumerTemplate<String, String> reactiveKafkaConsumerTemplate() {
-        return new ReactiveKafkaConsumerTemplate<>(receiverOptions());
+    @Qualifier("customerEventsConsumer")
+    public ReactiveKafkaConsumerTemplate<String, String> customersKafkaConsumerTemplate() {
+        return new ReactiveKafkaConsumerTemplate<>(customerEventsReceiverOptions());
     }
 
-    private ReceiverOptions<String, String> receiverOptions() {
+    private ReceiverOptions<String, String> customerEventsReceiverOptions() {
         Map<String, Object> consumerConfig = consumerConfig();
         ReceiverOptions<String, String> receiverOptions = ReceiverOptions.create(consumerConfig);
         return receiverOptions.subscription(Collections.singletonList("customer_events"));
+    }
+
+    @Bean
+    @Qualifier("transactionEventsConsumer")
+    public ReactiveKafkaConsumerTemplate<String, String> transactionsKafkaConsumerTemplate() {
+        return new ReactiveKafkaConsumerTemplate<>(transactionEventsReceiverOptions());
+    }
+
+    private ReceiverOptions<String, String> transactionEventsReceiverOptions() {
+        Map<String, Object> consumerConfig = consumerConfig();
+        ReceiverOptions<String, String> receiverOptions = ReceiverOptions.create(consumerConfig);
+        return receiverOptions.subscription(Collections.singletonList("transaction_events"));
     }
 }
