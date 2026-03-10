@@ -26,15 +26,13 @@ public class AccountCommandController {
     }
 
     @PutMapping(path = "{accountId}")
-    public Mono<AccountInfo> depositMoney(@PathVariable UUID accountId, @RequestBody long amount) {
-//        return accountService.updateCustomer(accountId, accountInfo);
-        return Mono.empty();
+    public Mono<AccountInfo> depositMoney(@PathVariable UUID accountId, long amount) {
+        return accountService.creditAccount(accountId, amount, null);
     }
 
     @PutMapping(path = "{accountId}")
-    public Mono<AccountInfo> withdrawMoney(@PathVariable UUID accountId, @RequestBody long amount) {
-//        return accountService.updateCustomer(accountId, accountInfo);
-        return Mono.empty();
+    public Mono<AccountInfo> withdrawMoney(@PathVariable UUID accountId, long amount) {
+        return accountService.debitAccount(accountId, amount, null);
     }
 
     @DeleteMapping(path = "{accountId}")

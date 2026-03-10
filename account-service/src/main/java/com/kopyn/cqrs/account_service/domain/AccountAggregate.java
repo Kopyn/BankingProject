@@ -1,10 +1,10 @@
 package com.kopyn.cqrs.account_service.domain;
 
 import com.kopyn.cqrs.account_service.api.commands.CreateAccountCommand;
+import com.kopyn.cqrs.account_service.api.commands.CreditAccountCommand;
+import com.kopyn.cqrs.account_service.api.commands.DebitAccountCommand;
 import com.kopyn.cqrs.account_service.api.commands.UpdateAccountCommand;
-import com.kopyn.cqrs.account_service.domain.events.AccountCreatedEvent;
-import com.kopyn.cqrs.account_service.domain.events.AccountDeletedEvent;
-import com.kopyn.cqrs.account_service.domain.events.AccountUpdatedEvent;
+import com.kopyn.cqrs.account_service.domain.events.*;
 import domain.events.Event;
 import lombok.Getter;
 
@@ -44,6 +44,28 @@ public class AccountAggregate {
         Event accountDeletedEvent = new AccountDeletedEvent(accountInfo, version + 1);
         changes.add(accountDeletedEvent);
         return List.of(accountDeletedEvent);
+    }
+
+    public List<Event> process(DebitAccountCommand debitAccountCommand) {
+        if (accountInfo.isDeleted()) {
+            throw new IllegalStateException("Account doesn't exist");
+        }
+        Event accountDebitedEvent = new AccountDebitedEvent(debitAccountCommand.accountId(), version + 1,
+                debitAccountCommand.amount(), accountInfo.getBalance(),
+                accountInfo.getBalance() - debitAccountCommand.amount(), debitAccountCommand.transactionId());
+        changes.add(accountDebitedEvent);
+        return List.of(accountDebitedEvent);
+    }
+
+    public List<Event> process(CreditAccountCommand creditAccountCommand) {
+        if (accountInfo.isDeleted()) {
+            throw new IllegalStateException("Account doesn't exist");
+        }
+        Event accountCreditedEvent = new AccountCreditedEvent(creditAccountCommand.accountId(), version + 1,
+                creditAccountCommand.amount(), accountInfo.getBalance(),
+                accountInfo.getBalance() + creditAccountCommand.amount(), creditAccountCommand.transactionId());
+        changes.add(accountCreditedEvent);
+        return List.of(accountCreditedEvent);
     }
 
     public void apply(Event event) {

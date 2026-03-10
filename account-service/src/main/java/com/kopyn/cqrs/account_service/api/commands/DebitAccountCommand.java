@@ -1,6 +1,10 @@
 package com.kopyn.cqrs.account_service.api.commands;
 
-public record DebitAccountCommand (
+import java.util.UUID;
 
+public record DebitAccountCommand (
+        UUID accountId,
+        long amount,
+        UUID transactionId
 ) implements Command {
 }
