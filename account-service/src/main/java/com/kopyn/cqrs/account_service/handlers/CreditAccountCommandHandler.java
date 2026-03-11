@@ -1,6 +1,5 @@
 package com.kopyn.cqrs.account_service.handlers;
 
-import com.kopyn.cqrs.account_service.api.commands.CreateAccountCommand;
 import com.kopyn.cqrs.account_service.api.commands.CreditAccountCommand;
 import com.kopyn.cqrs.account_service.domain.AccountAggregate;
 import com.kopyn.cqrs.account_service.domain.AccountInfo;
