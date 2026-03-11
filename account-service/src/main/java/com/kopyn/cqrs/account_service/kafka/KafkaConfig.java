@@ -1,5 +1,7 @@
 package com.kopyn.cqrs.account_service.kafka;
 
+import com.kopyn.cqrs.account_service.api.commands.Command;
+import domain.saga_commands.SagaCommand;
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -10,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.KafkaAdmin;
 import org.springframework.kafka.core.reactive.ReactiveKafkaConsumerTemplate;
+import org.springframework.kafka.support.serializer.JsonDeserializer;
 import reactor.kafka.receiver.ReceiverOptions;
 
 import java.util.Collections;
@@ -30,13 +33,13 @@ public class KafkaConfig {
     }
 
     @Bean
-    public NewTopic customerEventsTopic() {
-        return new NewTopic("customer_events", 1, (short) 1);
+    public NewTopic customerChannelTopic() {
+        return new NewTopic("customer_channel", 1, (short) 1);
     }
 
     @Bean
-    public NewTopic transactionEventsTopic() {
-        return new NewTopic("transaction_events", 1, (short) 1);
+    public NewTopic transactionChannelTopic() {
+        return new NewTopic("transaction_channel", 1, (short) 1);
     }
 
     // CONSUMER
@@ -44,9 +47,12 @@ public class KafkaConfig {
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         config.put(ConsumerConfig.GROUP_ID_CONFIG, "reactive-consumer-group");
-//        config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, JsonDeserializer.class);
+
+        config.put(JsonDeserializer.TRUSTED_PACKAGES, "com.kopyn.cqrs.*");
+        config.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
+        config.put(JsonDeserializer.VALUE_DEFAULT_TYPE, Command.class);
         return config;
     }
 
@@ -59,18 +65,21 @@ public class KafkaConfig {
     private ReceiverOptions<String, String> customerEventsReceiverOptions() {
         Map<String, Object> consumerConfig = consumerConfig();
         ReceiverOptions<String, String> receiverOptions = ReceiverOptions.create(consumerConfig);
-        return receiverOptions.subscription(Collections.singletonList("customer_events"));
+        return receiverOptions.subscription(Collections.singletonList("customer_channel"));
     }
 
     @Bean
     @Qualifier("transactionEventsConsumer")
-    public ReactiveKafkaConsumerTemplate<String, String> transactionsKafkaConsumerTemplate() {
+    public ReactiveKafkaConsumerTemplate<String, SagaCommand> transactionsKafkaConsumerTemplate() {
         return new ReactiveKafkaConsumerTemplate<>(transactionEventsReceiverOptions());
     }
 
-    private ReceiverOptions<String, String> transactionEventsReceiverOptions() {
-        Map<String, Object> consumerConfig = consumerConfig();
-        ReceiverOptions<String, String> receiverOptions = ReceiverOptions.create(consumerConfig);
-        return receiverOptions.subscription(Collections.singletonList("transaction_events"));
+    private ReceiverOptions<String, SagaCommand> transactionEventsReceiverOptions() {
+        JsonDeserializer<SagaCommand> deserializer = new JsonDeserializer<>(SagaCommand.class);
+        deserializer.addTrustedPackages("com.kopyn.cqrs.*");
+
+        return ReceiverOptions.<String, SagaCommand>create(consumerConfig())
+                .withValueDeserializer(deserializer)
+                .subscription(Collections.singletonList("transaction_channel"));
     }
 }

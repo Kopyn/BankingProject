@@ -52,7 +52,7 @@ public class AccountAggregate {
         }
         Event accountDebitedEvent = new AccountDebitedEvent(debitAccountCommand.accountId(), version + 1,
                 debitAccountCommand.amount(), accountInfo.getBalance(),
-                accountInfo.getBalance() - debitAccountCommand.amount(), debitAccountCommand.transactionId());
+                accountInfo.getBalance() - debitAccountCommand.amount(), null);
         changes.add(accountDebitedEvent);
         return List.of(accountDebitedEvent);
     }
@@ -63,7 +63,7 @@ public class AccountAggregate {
         }
         Event accountCreditedEvent = new AccountCreditedEvent(creditAccountCommand.accountId(), version + 1,
                 creditAccountCommand.amount(), accountInfo.getBalance(),
-                accountInfo.getBalance() + creditAccountCommand.amount(), creditAccountCommand.transactionId());
+                accountInfo.getBalance() + creditAccountCommand.amount(), null);
         changes.add(accountCreditedEvent);
         return List.of(accountCreditedEvent);
     }

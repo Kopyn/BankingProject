@@ -35,13 +35,13 @@ public class AccountCommandService {
         return deleteAccountCommandHandler.handle(cmd);
     }
 
-    public Mono<AccountInfo> creditAccount(UUID accountId, long amount, UUID transactionId) {
-        CreditAccountCommand cmd = new CreditAccountCommand(accountId, amount, transactionId);
+    public Mono<AccountInfo> creditAccount(UUID accountId, long amount) {
+        CreditAccountCommand cmd = new CreditAccountCommand(accountId, amount);
         return creditAccountCommandHandler.handle(cmd);
     }
 
-    public Mono<AccountInfo> debitAccount(UUID accountId, long amount, UUID transactionId) {
-        DebitAccountCommand cmd = new DebitAccountCommand(accountId, amount, transactionId);
+    public Mono<AccountInfo> debitAccount(UUID accountId, long amount) {
+        DebitAccountCommand cmd = new DebitAccountCommand(accountId, amount);
         return debitAccountCommandHandler.handle(cmd);
     }
 

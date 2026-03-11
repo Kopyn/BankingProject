@@ -4,7 +4,6 @@ import java.util.UUID;
 
 public record CreditAccountCommand (
         UUID accountId,
-        long amount,
-        UUID transactionId
+        long amount
 ) implements Command {
 }

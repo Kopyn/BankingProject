@@ -1,5 +1,6 @@
 package com.kopyn.cqrs.account_service.projection;
 
+import domain.saga_commands.SagaCommand;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.reactive.ReactiveKafkaConsumerTemplate;
@@ -13,12 +14,12 @@ import static reactor.netty.http.HttpConnectionLiveness.log;
 public class SagaManager {
 
     private final ReactiveKafkaConsumerTemplate<String, String> customersKafkaConsumerTemplate;
-    private final ReactiveKafkaConsumerTemplate<String, String> transactionsKafkaConsumerTemplate;
+    private final ReactiveKafkaConsumerTemplate<String, SagaCommand> transactionsKafkaConsumerTemplate;
 
     public SagaManager(@Qualifier("customerEventsConsumer")
                        ReactiveKafkaConsumerTemplate<String, String> reactiveKafkaConsumerTemplate,
                        @Qualifier("transactionEventsConsumer")
-                       ReactiveKafkaConsumerTemplate<String, String> transactionsKafkaConsumerTemplate) {
+                       ReactiveKafkaConsumerTemplate<String, SagaCommand> transactionsKafkaConsumerTemplate) {
         this.customersKafkaConsumerTemplate = reactiveKafkaConsumerTemplate;
         this.transactionsKafkaConsumerTemplate = transactionsKafkaConsumerTemplate;
 
@@ -44,7 +45,7 @@ public class SagaManager {
                 .doOnError(error -> log.error("Consumer error: {}", error.getMessage()));
     }
 
-    public Flux<String> transactionMessagesFlux() {
+    public Flux<SagaCommand> transactionMessagesFlux() {
         return transactionsKafkaConsumerTemplate.receive()
                 .map(ReceiverRecord::value)
                 .doOnNext(System.out::println)
