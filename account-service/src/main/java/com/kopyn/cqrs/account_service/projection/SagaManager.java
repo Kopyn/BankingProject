@@ -19,16 +19,16 @@ import static reactor.netty.http.HttpConnectionLiveness.log;
 public class SagaManager {
 
     private final ReactiveKafkaConsumerTemplate<String, String> customersKafkaConsumerTemplate;
-    private final ReactiveKafkaConsumerTemplate<String, SagaCommand> transactionsKafkaConsumerTemplate;
+    private final ReactiveKafkaConsumerTemplate<String, SagaCommand> accountKafkaConsumerTemplate;
     private final ReactiveKafkaProducerTemplate<String, SagaCommand> transactionsKafkaProducerTemplate;
 
     public SagaManager(@Qualifier("customerEventsConsumer")
                        ReactiveKafkaConsumerTemplate<String, String> reactiveKafkaConsumerTemplate,
                        @Qualifier("transactionEventsConsumer")
-                       ReactiveKafkaConsumerTemplate<String, SagaCommand> transactionsKafkaConsumerTemplate,
+                       ReactiveKafkaConsumerTemplate<String, SagaCommand> accountKafkaConsumerTemplate,
                        ReactiveKafkaProducerTemplate<String, SagaCommand> transactionsKafkaProducerTemplate) {
         this.customersKafkaConsumerTemplate = reactiveKafkaConsumerTemplate;
-        this.transactionsKafkaConsumerTemplate = transactionsKafkaConsumerTemplate;
+        this.accountKafkaConsumerTemplate = accountKafkaConsumerTemplate;
         this.transactionsKafkaProducerTemplate = transactionsKafkaProducerTemplate;
     }
 
@@ -38,7 +38,7 @@ public class SagaManager {
                 .retry()
                 .subscribe();
 
-        transactionMessagesFlux()
+        accountMessagesFlux()
                 .retry()
                 .subscribe();
     }
@@ -50,8 +50,8 @@ public class SagaManager {
                 .doOnError(error -> log.error("Consumer error: {}", error.getMessage()));
     }
 
-    public Flux<SagaCommand> transactionMessagesFlux() {
-        return transactionsKafkaConsumerTemplate.receive()
+    public Flux<SagaCommand> accountMessagesFlux() {
+        return accountKafkaConsumerTemplate.receive()
                 .map(ReceiverRecord::value)
                 .doOnNext(this::handleTransactionSagaCommand)
                 .doOnError(error -> log.error("Transaction error: {}", error.getMessage()));

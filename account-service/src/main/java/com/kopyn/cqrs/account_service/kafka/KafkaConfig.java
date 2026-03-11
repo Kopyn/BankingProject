@@ -27,6 +27,10 @@ import java.util.Map;
 @Configuration
 public class KafkaConfig {
 
+    private static final String CUSTOMER_CHANNEL = "customer_channel";
+    private static final String TRANSACTION_CHANNEL = "transaction_channel";
+    private static final String ACCOUNT_CHANNEL = "account_channel";
+
     @Value("${spring.kafka.bootstrap-servers}")
     public String bootstrapServers;
 
@@ -39,12 +43,17 @@ public class KafkaConfig {
 
     @Bean
     public NewTopic customerChannelTopic() {
-        return new NewTopic("customer_channel", 1, (short) 1);
+        return new NewTopic(CUSTOMER_CHANNEL, 1, (short) 1);
     }
 
     @Bean
     public NewTopic transactionChannelTopic() {
-        return new NewTopic("transaction_channel", 1, (short) 1);
+        return new NewTopic(TRANSACTION_CHANNEL, 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic accountChannelTopic() {
+        return new NewTopic(ACCOUNT_CHANNEL, 1, (short) 1);
     }
 
     // CONSUMER
@@ -70,7 +79,7 @@ public class KafkaConfig {
     private ReceiverOptions<String, String> customerEventsReceiverOptions() {
         Map<String, Object> consumerConfig = consumerConfig();
         ReceiverOptions<String, String> receiverOptions = ReceiverOptions.create(consumerConfig);
-        return receiverOptions.subscription(Collections.singletonList("customer_channel"));
+        return receiverOptions.subscription(Collections.singletonList(CUSTOMER_CHANNEL));
     }
 
     @Bean
@@ -85,7 +94,7 @@ public class KafkaConfig {
 
         return ReceiverOptions.<String, SagaCommand>create(consumerConfig())
                 .withValueDeserializer(deserializer)
-                .subscription(Collections.singletonList("transaction_channel"));
+                .subscription(Collections.singletonList(TRANSACTION_CHANNEL));
     }
 
     // PRODUCER
