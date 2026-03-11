@@ -1,2 +1,7 @@
-domain\events\EventModel.class
+domain\saga_commands\account\CreditAccountSagaCommand.class
 domain\events\Event.class
+domain\saga_commands\account\DebitAccountSagaCommand.class
+domain\saga_commands\account\RefundAccountSagaCommand.class
+domain\saga_commands\SagaCommand.class
+domain\saga_commands\transaction\ContinueTransactionCommand.class
+domain\saga_commands\transaction\FinalizeTransactionCommand.class

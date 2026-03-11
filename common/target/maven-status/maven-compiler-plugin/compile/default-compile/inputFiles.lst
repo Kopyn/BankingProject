@@ -1,2 +1,7 @@
 D:\repos\CQRS-Project\common\src\main\java\domain\events\Event.java
-D:\repos\CQRS-Project\common\src\main\java\domain\events\EventModel.java
+D:\repos\CQRS-Project\common\src\main\java\domain\saga_commands\account\CreditAccountSagaCommand.java
+D:\repos\CQRS-Project\common\src\main\java\domain\saga_commands\account\DebitAccountSagaCommand.java
+D:\repos\CQRS-Project\common\src\main\java\domain\saga_commands\account\RefundAccountSagaCommand.java
+D:\repos\CQRS-Project\common\src\main\java\domain\saga_commands\SagaCommand.java
+D:\repos\CQRS-Project\common\src\main\java\domain\saga_commands\transaction\ContinueTransactionCommand.java
+D:\repos\CQRS-Project\common\src\main\java\domain\saga_commands\transaction\FinalizeTransactionCommand.java
