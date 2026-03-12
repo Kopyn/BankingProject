@@ -4,9 +4,9 @@ import domain.saga_commands.SagaCommand;
 
 import java.util.UUID;
 
-// Command used when first account was debited successfully
-public record ContinueTransactionCommand (
+// Command used when the first account couldn't be debited
+public record AbortTransactionCommand (
         UUID transactionId,
-        UUID accountToCreditId
+        String reason
 ) implements SagaCommand {
 }

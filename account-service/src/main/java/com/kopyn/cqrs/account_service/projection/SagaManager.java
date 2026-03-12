@@ -1,9 +1,11 @@
 package com.kopyn.cqrs.account_service.projection;
 
+import com.kopyn.cqrs.account_service.handlers.SagaCommandHandler;
 import domain.saga_commands.SagaCommand;
 import domain.saga_commands.account.CreditAccountSagaCommand;
 import domain.saga_commands.account.DebitAccountSagaCommand;
 import domain.saga_commands.account.RefundAccountSagaCommand;
+import domain.saga_commands.transaction.ContinueTransactionCommand;
 import domain.saga_commands.transaction.FinalizeTransactionCommand;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,6 +20,8 @@ import static reactor.netty.http.HttpConnectionLiveness.log;
 @Component
 public class SagaManager {
 
+    private final SagaCommandHandler sagaCommandHandler;
+
     private final ReactiveKafkaConsumerTemplate<String, String> customersKafkaConsumerTemplate;
     private final ReactiveKafkaConsumerTemplate<String, SagaCommand> accountKafkaConsumerTemplate;
     private final ReactiveKafkaProducerTemplate<String, SagaCommand> transactionsKafkaProducerTemplate;
@@ -26,10 +30,12 @@ public class SagaManager {
                        ReactiveKafkaConsumerTemplate<String, String> reactiveKafkaConsumerTemplate,
                        @Qualifier("transactionEventsConsumer")
                        ReactiveKafkaConsumerTemplate<String, SagaCommand> accountKafkaConsumerTemplate,
-                       ReactiveKafkaProducerTemplate<String, SagaCommand> transactionsKafkaProducerTemplate) {
+                       ReactiveKafkaProducerTemplate<String, SagaCommand> transactionsKafkaProducerTemplate,
+                       SagaCommandHandler sagaCommandHandler) {
         this.customersKafkaConsumerTemplate = reactiveKafkaConsumerTemplate;
         this.accountKafkaConsumerTemplate = accountKafkaConsumerTemplate;
         this.transactionsKafkaProducerTemplate = transactionsKafkaProducerTemplate;
+        this.sagaCommandHandler = sagaCommandHandler;
     }
 
     @PostConstruct
@@ -62,21 +68,32 @@ public class SagaManager {
             case DebitAccountSagaCommand debCmd -> handleDebitAccountSagaCommand(debCmd);
             case CreditAccountSagaCommand credCmd -> handleCreditAccountSagaCommand(credCmd);
             case RefundAccountSagaCommand refCmd -> handleRefundAccountSagaCommand(refCmd);
-            default -> log.error("Unknown saga command");
+            default -> log.error("Unknown SAGA command");
         }
     }
 
     private void handleDebitAccountSagaCommand(DebitAccountSagaCommand debCmd) {
         System.out.println("debiting account");
 
-        SagaCommand creditAccountCommand = new CreditAccountSagaCommand(debCmd.creditAccount(), debCmd.amount(), debCmd.transactionId());
-        transactionsKafkaProducerTemplate.send("transaction_channel", creditAccountCommand)
-                .doOnSuccess(result -> System.out.println("Sent: " + creditAccountCommand))
+        // load account to debit aggregate
+        // check if there are sufficient funds in the account and if it can be debited
+        // subtract the amount from account's balance
+        sagaCommandHandler.handle(debCmd);
+
+        SagaCommand continueTransactionCommand = new ContinueTransactionCommand(debCmd.transactionId(),
+                debCmd.creditAccount());
+        transactionsKafkaProducerTemplate.send("transaction_channel", continueTransactionCommand)
+                .doOnSuccess(result -> System.out.println("Sent: " + continueTransactionCommand))
                 .then();
     }
 
     private void handleCreditAccountSagaCommand(CreditAccountSagaCommand credCmd) {
         System.out.println("crediting account");
+
+        // load account to credit aggregate
+        // check if the account can be credited
+        // add the amount from account's balance
+        sagaCommandHandler.handle(credCmd);
 
         SagaCommand finalizeTransactionCommand = new FinalizeTransactionCommand(credCmd.transactionId());
         transactionsKafkaProducerTemplate.send("transaction_channel", finalizeTransactionCommand)

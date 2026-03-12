@@ -6,6 +6,10 @@ import com.kopyn.cqrs.account_service.api.commands.DebitAccountCommand;
 import com.kopyn.cqrs.account_service.api.commands.UpdateAccountCommand;
 import com.kopyn.cqrs.account_service.domain.events.*;
 import domain.events.Event;
+import domain.saga_commands.SagaCommand;
+import domain.saga_commands.account.CreditAccountSagaCommand;
+import domain.saga_commands.account.DebitAccountSagaCommand;
+import domain.saga_commands.account.RefundAccountSagaCommand;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -68,16 +72,38 @@ public class AccountAggregate {
         return List.of(accountCreditedEvent);
     }
 
+    // SAGA handling
+    public List<Event> process(SagaCommand sagaCommand) throws IllegalStateException {
+        if (accountInfo.isDeleted()) {
+            throw new IllegalStateException("Account is already deleted");
+        }
+        return switch (sagaCommand) {
+            case CreditAccountSagaCommand cred -> process(cred);
+            case DebitAccountSagaCommand deb -> process(deb);
+            case RefundAccountSagaCommand ref -> process(ref);
+            default -> throw new IllegalStateException("Unknown SAGA command");
+        };
+    }
+
+    private List<Event> process(CreditAccountSagaCommand credSagaCmd) {
+        return null;
+    }
+
+    private List<Event> process(DebitAccountSagaCommand debSagaCmd) {
+        return null;
+    }
+
+    private List<Event> process(RefundAccountSagaCommand refSagaCmd) {
+        return null;
+    }
+
     public void apply(Event event) {
         version += 1;
-        if (event instanceof AccountCreatedEvent e) {
-            apply(e);
-        } else if (event instanceof AccountUpdatedEvent e) {
-            apply(e);
-        } else if (event instanceof AccountDeletedEvent) {
-            apply();
-        } else {
-            throw new IllegalArgumentException("Unknown event type: " + event);
+        switch (event) {
+            case AccountCreatedEvent e -> apply(e);
+            case AccountUpdatedEvent e -> apply(e);
+            case AccountDeletedEvent ignored -> apply();
+            case null, default -> throw new IllegalArgumentException("Unknown event type: " + event);
         }
     }
 

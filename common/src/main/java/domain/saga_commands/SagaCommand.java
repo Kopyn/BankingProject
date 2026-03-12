@@ -7,6 +7,8 @@ import domain.saga_commands.account.DebitAccountSagaCommand;
 import domain.saga_commands.account.RefundAccountSagaCommand;
 import domain.saga_commands.transaction.FinalizeTransactionCommand;
 
+import java.util.UUID;
+
 
 // this is not ideal, should have 1 interface to prevent modifying this class in case new command is introduced
 @JsonTypeInfo(
@@ -21,4 +23,5 @@ import domain.saga_commands.transaction.FinalizeTransactionCommand;
         @JsonSubTypes.Type(value = FinalizeTransactionCommand.class, name = "finalizeTransaction")
 })
 public interface SagaCommand {
+    UUID accountId();
 }
