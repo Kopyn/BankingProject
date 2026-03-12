@@ -10,4 +10,8 @@ public record RevokeTransactionCommand (
         UUID accountToRefundId,
         String reason
 ) implements SagaCommand {
+    @Override
+    public UUID accountId() {
+        return accountToRefundId;
+    }
 }

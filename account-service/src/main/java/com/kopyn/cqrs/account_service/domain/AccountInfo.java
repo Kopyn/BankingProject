@@ -18,7 +18,6 @@ public class AccountInfo {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean deleted; // proper would be some status CREATED, DELETED
 
-
     public AccountInfo(String uuid, String customerId, long balance, boolean deleted) {
         this.uuid = uuid;
         this.customerId = customerId;

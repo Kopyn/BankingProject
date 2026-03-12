@@ -9,4 +9,8 @@ public record AbortTransactionCommand (
         UUID transactionId,
         String reason
 ) implements SagaCommand {
+    @Override
+    public UUID accountId() {
+        return null;
+    }
 }

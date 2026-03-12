@@ -9,4 +9,8 @@ public record ContinueTransactionCommand (
         UUID transactionId,
         UUID accountToCreditId
 ) implements SagaCommand {
+    @Override
+    public UUID accountId() {
+        return accountToCreditId;
+    }
 }

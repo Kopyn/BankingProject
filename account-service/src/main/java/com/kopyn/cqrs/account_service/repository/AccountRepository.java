@@ -24,7 +24,6 @@ public class AccountRepository {
                         new AccountEventModel(UUID.randomUUID().toString(), Instant.now(), event.getAggregateId(),
                                 event, event.getAggregateVersion()))
                 .flatMap(esRepository::save);
-//        return Flux.empty();
     }
 
     public Mono<AccountAggregate> findAccountById(UUID uuid) {

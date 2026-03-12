@@ -86,11 +86,19 @@ public class AccountAggregate {
     }
 
     private List<Event> process(CreditAccountSagaCommand credSagaCmd) {
-        return null;
+        Event accountCreditedEvent = new AccountCreditedEvent(credSagaCmd.accountId(), version + 1,
+                credSagaCmd.amount(), accountInfo.getBalance(),
+                accountInfo.getBalance() + credSagaCmd.amount(), credSagaCmd.transactionId());
+        changes.add(accountCreditedEvent);
+        return List.of(accountCreditedEvent);
     }
 
     private List<Event> process(DebitAccountSagaCommand debSagaCmd) {
-        return null;
+        Event accountDebitedEvent = new AccountDebitedEvent(debSagaCmd.accountId(), version + 1,
+                debSagaCmd.amount(), accountInfo.getBalance(),
+                accountInfo.getBalance() - debSagaCmd.amount(), debSagaCmd.transactionId());
+        changes.add(accountDebitedEvent);
+        return List.of(accountDebitedEvent);
     }
 
     private List<Event> process(RefundAccountSagaCommand refSagaCmd) {

@@ -5,7 +5,7 @@ import domain.saga_commands.SagaCommand;
 import java.util.UUID;
 
 public record DebitAccountSagaCommand (
-        UUID debitAccount,
+        UUID accountId,
         UUID creditAccount,
         long amount,
         UUID transactionId

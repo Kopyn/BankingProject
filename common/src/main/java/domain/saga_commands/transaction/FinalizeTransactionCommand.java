@@ -8,4 +8,8 @@ import java.util.UUID;
 public record FinalizeTransactionCommand (
         UUID transactionId
 ) implements SagaCommand {
+    @Override
+    public UUID accountId() {
+        return null;
+    }
 }
