@@ -14,9 +14,9 @@ import java.util.List;
 public class SagaCommandHandler {
     private final AccountRepository accountRepository;
 
-    // can still use AccountAggregate for logging purposes
+    // can still use AccountAggregate for logging purposes, need to return result and handle failures
     public Mono<Void> handle(SagaCommand command) {
-        return accountRepository.findAccountById(command.accountId())
+        return accountRepository.findAccountById(command.aggregateId())
                 .flatMap(accountAggregate -> {
                     List<Event> producedEvents = accountAggregate.process(command);
                     producedEvents.forEach(accountAggregate::apply);
@@ -24,6 +24,5 @@ public class SagaCommandHandler {
                             .then();
                 });
     }
-
 
 }

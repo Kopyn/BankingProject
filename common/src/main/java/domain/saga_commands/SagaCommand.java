@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import domain.saga_commands.account.CreditAccountSagaCommand;
 import domain.saga_commands.account.DebitAccountSagaCommand;
 import domain.saga_commands.account.RefundAccountSagaCommand;
-import domain.saga_commands.transaction.FinalizeTransactionCommand;
+import domain.saga_commands.transaction.FinalizeTransactionSagaCommand;
 
 import java.util.UUID;
 
@@ -20,8 +20,8 @@ import java.util.UUID;
         @JsonSubTypes.Type(value = CreditAccountSagaCommand.class, name = "credit"),
         @JsonSubTypes.Type(value = DebitAccountSagaCommand.class, name = "debit"),
         @JsonSubTypes.Type(value = RefundAccountSagaCommand.class, name = "refund"),
-        @JsonSubTypes.Type(value = FinalizeTransactionCommand.class, name = "finalizeTransaction")
+        @JsonSubTypes.Type(value = FinalizeTransactionSagaCommand.class, name = "finalizeTransaction")
 })
 public interface SagaCommand {
-    UUID accountId();
+    UUID aggregateId();
 }

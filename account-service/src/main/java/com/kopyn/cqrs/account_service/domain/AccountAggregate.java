@@ -85,8 +85,9 @@ public class AccountAggregate {
         };
     }
 
+    // probably here should be "SomethingFailedEvent" to know the reason and return some result
     private List<Event> process(CreditAccountSagaCommand credSagaCmd) {
-        Event accountCreditedEvent = new AccountCreditedEvent(credSagaCmd.accountId(), version + 1,
+        Event accountCreditedEvent = new AccountCreditedEvent(credSagaCmd.aggregateId(), version + 1,
                 credSagaCmd.amount(), accountInfo.getBalance(),
                 accountInfo.getBalance() + credSagaCmd.amount(), credSagaCmd.transactionId());
         changes.add(accountCreditedEvent);
@@ -94,7 +95,7 @@ public class AccountAggregate {
     }
 
     private List<Event> process(DebitAccountSagaCommand debSagaCmd) {
-        Event accountDebitedEvent = new AccountDebitedEvent(debSagaCmd.accountId(), version + 1,
+        Event accountDebitedEvent = new AccountDebitedEvent(debSagaCmd.aggregateId(), version + 1,
                 debSagaCmd.amount(), accountInfo.getBalance(),
                 accountInfo.getBalance() - debSagaCmd.amount(), debSagaCmd.transactionId());
         changes.add(accountDebitedEvent);

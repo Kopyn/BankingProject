@@ -1,17 +1,23 @@
 package com.kopyn.cqrs.transaction_service.domain.events;
 
+import com.kopyn.cqrs.transaction_service.domain.TransactionInfo;
 import domain.events.Event;
 
-public record TransactionRevokedEvent(
+import java.util.UUID;
 
+public record TransactionRevokedEvent(
+        UUID transactionId,
+        int aggregateVersion,
+        TransactionInfo transactionInfo,
+        String reason
 ) implements Event {
     @Override
     public String getAggregateId() {
-        return "";
+        return transactionInfo.toString();
     }
 
     @Override
     public int getAggregateVersion() {
-        return 0;
+        return aggregateVersion;
     }
 }

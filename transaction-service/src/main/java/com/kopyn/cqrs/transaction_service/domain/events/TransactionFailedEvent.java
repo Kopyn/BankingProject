@@ -2,16 +2,20 @@ package com.kopyn.cqrs.transaction_service.domain.events;
 
 import domain.events.Event;
 
-public record TransactionFailedEvent(
+import java.util.UUID;
 
+public record TransactionFailedEvent(
+        UUID transactionId,
+        int aggregateVersion,
+        String reason
 ) implements Event {
     @Override
     public String getAggregateId() {
-        return "";
+        return transactionId.toString();
     }
 
     @Override
     public int getAggregateVersion() {
-        return 0;
+        return aggregateVersion;
     }
 }

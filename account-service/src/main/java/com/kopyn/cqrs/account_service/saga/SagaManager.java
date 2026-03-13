@@ -1,13 +1,14 @@
-package com.kopyn.cqrs.account_service.projection;
+package com.kopyn.cqrs.account_service.saga;
 
 import com.kopyn.cqrs.account_service.handlers.SagaCommandHandler;
 import domain.saga_commands.SagaCommand;
 import domain.saga_commands.account.CreditAccountSagaCommand;
 import domain.saga_commands.account.DebitAccountSagaCommand;
 import domain.saga_commands.account.RefundAccountSagaCommand;
-import domain.saga_commands.transaction.ContinueTransactionCommand;
-import domain.saga_commands.transaction.FinalizeTransactionCommand;
+import domain.saga_commands.transaction.ContinueTransactionSagaCommand;
+import domain.saga_commands.transaction.FinalizeTransactionSagaCommand;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.kafka.core.reactive.ReactiveKafkaConsumerTemplate;
 import org.springframework.kafka.core.reactive.ReactiveKafkaProducerTemplate;
@@ -15,8 +16,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.kafka.receiver.ReceiverRecord;
 
-import static reactor.netty.http.HttpConnectionLiveness.log;
-
+@Slf4j
 @Component
 public class SagaManager {
 
@@ -78,9 +78,9 @@ public class SagaManager {
         // load account to debit aggregate
         // check if there are sufficient funds in the account and if it can be debited
         // subtract the amount from account's balance
-        sagaCommandHandler.handle(debCmd);
+        sagaCommandHandler.handle(debCmd).subscribe();
 
-        SagaCommand continueTransactionCommand = new ContinueTransactionCommand(debCmd.transactionId(),
+        SagaCommand continueTransactionCommand = new ContinueTransactionSagaCommand(debCmd.transactionId(),
                 debCmd.creditAccount());
         transactionsKafkaProducerTemplate.send("transaction_channel", continueTransactionCommand)
                 .doOnSuccess(result -> System.out.println("Sent: " + continueTransactionCommand))
@@ -93,9 +93,9 @@ public class SagaManager {
         // load account to credit aggregate
         // check if the account can be credited
         // add the amount from account's balance
-        sagaCommandHandler.handle(credCmd);
+        sagaCommandHandler.handle(credCmd).subscribe();
 
-        SagaCommand finalizeTransactionCommand = new FinalizeTransactionCommand(credCmd.transactionId());
+        SagaCommand finalizeTransactionCommand = new FinalizeTransactionSagaCommand(credCmd.transactionId());
         transactionsKafkaProducerTemplate.send("transaction_channel", finalizeTransactionCommand)
                 .doOnSuccess(result -> System.out.println("Sent: " + finalizeTransactionCommand))
                 .then();

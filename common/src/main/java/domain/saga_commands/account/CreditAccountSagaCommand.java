@@ -5,7 +5,7 @@ import domain.saga_commands.SagaCommand;
 import java.util.UUID;
 
 public record CreditAccountSagaCommand (
-        UUID accountId,
+        UUID aggregateId,
         long amount,
         UUID transactionId
 ) implements SagaCommand {
