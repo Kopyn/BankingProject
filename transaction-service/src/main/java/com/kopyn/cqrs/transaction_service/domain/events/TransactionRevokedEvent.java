@@ -2,7 +2,7 @@ package com.kopyn.cqrs.transaction_service.domain.events;
 
 import domain.events.Event;
 
-public record TransactionInitiatedEvent(
+public record TransactionRevokedEvent(
 
 ) implements Event {
     @Override

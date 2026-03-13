@@ -26,9 +26,9 @@ public class SagaManager {
     private final ReactiveKafkaConsumerTemplate<String, SagaCommand> accountKafkaConsumerTemplate;
     private final ReactiveKafkaProducerTemplate<String, SagaCommand> transactionsKafkaProducerTemplate;
 
-    public SagaManager(@Qualifier("customerEventsConsumer")
+    public SagaManager(@Qualifier("customerCommandConsumer")
                        ReactiveKafkaConsumerTemplate<String, String> reactiveKafkaConsumerTemplate,
-                       @Qualifier("transactionEventsConsumer")
+                       @Qualifier("accountCommandConsumer")
                        ReactiveKafkaConsumerTemplate<String, SagaCommand> accountKafkaConsumerTemplate,
                        ReactiveKafkaProducerTemplate<String, SagaCommand> transactionsKafkaProducerTemplate,
                        SagaCommandHandler sagaCommandHandler) {

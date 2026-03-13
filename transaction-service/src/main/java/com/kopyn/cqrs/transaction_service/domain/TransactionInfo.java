@@ -11,23 +11,26 @@ import lombok.*;
 public class TransactionInfo {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String uuid;
-    private String customerId;
+    private String debitAccountId;
+    private String creditAccountId;
+    private long amount;
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private long balance;
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private boolean deleted; // proper would be some status CREATED, DELETED
+    private TransactionStatus status;
 
-    public TransactionInfo(String uuid, String customerId, long balance, boolean deleted) {
+    public TransactionInfo(String uuid, String debitAccountId, String creditAccountId, long amount,
+                           TransactionStatus status) {
         this.uuid = uuid;
-        this.customerId = customerId;
-        this.balance = balance;
-        this.deleted = deleted;
+        this.debitAccountId = debitAccountId;
+        this.creditAccountId = creditAccountId;
+        this.amount = amount;
+        this.status = status;
     }
 
     public TransactionInfo(TransactionInfo other) {
         this.uuid = other.uuid;
-        this.customerId = other.customerId;
-        this.balance = other.balance;
-        this.deleted = other.deleted;
+        this.debitAccountId = other.debitAccountId;
+        this.creditAccountId = other.creditAccountId;
+        this.amount = other.amount;
+        this.status = other.status;
     }
 }

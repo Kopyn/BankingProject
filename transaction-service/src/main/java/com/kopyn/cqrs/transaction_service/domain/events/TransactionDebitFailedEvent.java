@@ -1,4 +1,17 @@
 package com.kopyn.cqrs.transaction_service.domain.events;
 
-public class TransactionDebitFailedEvent {
+import domain.events.Event;
+
+public record TransactionDebitFailedEvent(
+
+) implements Event {
+    @Override
+    public String getAggregateId() {
+        return "";
+    }
+
+    @Override
+    public int getAggregateVersion() {
+        return 0;
+    }
 }
