@@ -1,7 +1,7 @@
 # BankingProject
-This project aims to simulate the behaviour of a banking system. The architecture is based on CQRS and Event Sourcing patterns and the project is entirely focused on learning the basics of distributed and event-sourced systems, therefore I tried mixing different approaches to try and learn upsides as well as downsides of each approach.
-Command side of the system is handled by account-service, customer-service and transaction-service which serves as a SAGA orchestrator for inter-account money transfers.
-Query side is handled by customer-service but also one query-specific service - account-info-service. Customer-service should ideally be broken into separate services, so queries and commands could be handled and scaled separately.
+This project aims to simulate the behaviour of a banking system. The architecture is based on CQRS and Event Sourcing patterns and the project is entirely focused on learning the basics of distributed and event-sourced systems, therefore I tried mixing different approaches to try and learn upsides as well as downsides of each approach.<br>
+Command side of the system is handled by account-service, customer-service and transaction-service which serves as a SAGA orchestrator for inter-account money transfers.<br>
+Query side is handled by customer-service but also one query-specific service - account-info-service. Customer-service should ideally be broken into separate services, so queries and commands could be handled and scaled separately.<br>
 I also included a spring-cloud-gateway as an entry point to the system. It is used as oauth2 client, it stores user sessions with redis and is a good approach for any request and/or response filtering in the future.
 
 ## Breakdown of project components:
@@ -10,6 +10,8 @@ I also included a spring-cloud-gateway as an entry point to the system. It is us
 * Customer-service
 * Transaction-service
 * Account-info-service
+* Event bus - handling communication between services, especially in managing SAGAs
+* Authorization server
 
 ## Tech stack
 * Java with SpringWebflux for asynchronous and non-blocking command processing
